@@ -1,0 +1,27 @@
+
+// удаление директории без возможности восстановления
+fun delete_directory(path) {
+    if path.is_directory() {
+        for file in path.files().iter() {
+            delete_directory(file)
+        }
+        fs.delete_path(path)
+    } else {
+        fs.delete_path(path)
+    }
+}
+
+// удаление директории с вопросом о серьёзности намерений
+fun delete_target() {
+    cwd_path := system.cwd()
+    target_folder := cwd_path.resolve('.target')
+    io.println(target_folder + ' is already exists, are you sure you wanna delete it 🤔')
+    io.print('[y/n]: ')
+    answer := io.input()
+    if answer.toLowerCase() == 'y' {
+        delete_directory(target_folder)
+    } else {
+        io.println('cancelled 🤖')
+        system.exit(2)
+    }
+}

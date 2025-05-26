@@ -1,0 +1,5 @@
+import 'std.fs'
+
+fun joule {
+   __refl__.define(fs.path_of('G:\Kilowatt\Joule\example\.target\joule\Main.class'),'joule.Main')
+}

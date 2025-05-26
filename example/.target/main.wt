@@ -1,0 +1,5 @@
+import 'joule.wt'
+
+joule:joule()
+main := __refl__.reflect('joule.Main', [])
+main.print()

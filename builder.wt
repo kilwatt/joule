@@ -1,0 +1,105 @@
+// импорты
+import 'std.io'
+import 'std.system'
+import 'std.fs'
+import 'std.strings'
+import 'std.threads'
+
+import 'utils.json'
+import 'utils.stream.api'
+
+import 'utils.wt'
+import 'colors.wt'
+
+// компиляция java
+fun compile_java {
+    // словарь [джава_файл, класс_файл]
+    compiled := []
+    // пути
+    cwd_path := system.cwd()
+    target_folder := cwd_path.resolve('.target')
+    java_folder := cwd_path.resolve('.java')
+    // компиляция
+    for java_file in java_folder.files().iter() {
+        class_file := target_folder.resolve('joule').resolve(
+            java_file.filename().replace('.java', '.class')
+        )
+        compiled.add([java_file,class_file])
+        _error := __refl__.compile(java_file,target_folder)
+        if _error != null {
+            io.println('error occured: ')
+            io.println(_error)
+            system.exit(2)
+        }
+    }
+    return compiled
+}
+
+// компиляция joule.wt файла
+fun compile_joule(compiled) {
+    // пути
+    cwd_path := system.cwd()
+    target_folder := cwd_path.resolve('.target')
+    joule_file := target_folder.resolve('joule.wt')
+    // текст
+    text := str.unescape('import \"std.fs\"\n\nfun joule {\n')
+    // формирование файла
+    for pair in compiled.iter() {
+        java_file_name := pair.get(0)
+        class_file_name := pair.get(1)
+        // формирование имени класса
+        class_name := 'joule.'
+        current := class_file_name
+        if current.parent().filename() != 'joule' {
+            while current.parent().filename() != 'joule' {
+                class_name += current.parent().filename() + '.'
+                current = current.parent()
+            }
+        }
+        class_name += class_file_name.filename().replace('.class', '')
+        // добавляем в текст
+        text += '   __refl__.define(fs.path_of(\"' + class_file_name + '\"),\"' + class_name + '\")' + str.unescape('\n')
+    }
+    text += '}'
+    // запись
+    fs.write_text(joule_file, text)
+}
+
+// копирование .wt файлов
+fun copy_watt_files {
+    // пути
+    cwd_path := system.cwd()
+    target_folder := cwd_path.resolve('.target')
+    joule_file := target_folder.resolve('joule.wt')
+    // получаем список файлов
+    files := new Stream(cwd_path.files()).map(lambda(it) -> it.to_string()).get()
+    files.delete(cwd_path.resolve('config.joule').to_string())
+    files.delete(cwd_path.resolve('.target').to_string())
+    files.delete(cwd_path.resolve('.java').to_string())
+    files = new Stream(files).map(lambda(it) -> fs.path_of(it)).get()
+    // копируем
+    for file in files.iter() {
+        filename := file.filename()
+        fs.copy_path(file,target_folder.resolve(filename))
+    }
+}
+
+fun run_main {
+    cwd_path := system.cwd()
+    watt_executable := cwd_path.resolve('../.compiler/watt.bat')
+    main_file_name :=  json.parse(
+        fs.read_text(
+            cwd_path.resolve('config.joule')
+        )
+    ).get('main')
+    watt_target := cwd_path.resolve('.target').resolve(main_file_name)
+    io.println('running main...' + colors.reset)
+    process := system.process([watt_executable.to_string(),watt_target.to_string()], true)
+    io.println(colors.green + 'started main, pid: ' + process.pid() + colors.reset)
+    io.println('......')
+    while process.isAlive() {
+        threads.sleep(20)
+    }
+    io.println('......')
+    io.println(colors.green + 'successfuly ended main, pid: ' + process.pid() + colors.reset)
+}
