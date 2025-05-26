@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "Watt",
+            "program": "$PROJECT_DIR$\\.compiler\\watt.bat",
+            "args": ["$PROJECT_DIR$\\joule.wt","run"],
+            "workingDir": "/test"
+        },
+        {
+            "type": "command",
+            "name": "Joule New",
+            "program": "$PROJECT_DIR$\\.compiler\\watt.bat",
+            "args": ["$PROJECT_DIR$\\joule.wt","new","test"],
+        },
+        {
+            "type": "command",
+            "name": "Joule Run",
+            "program": "$PROJECT_DIR$\\.compiler\\watt.bat",
+            "args": ["$PROJECT_DIR$\\joule.wt","run"],
+            "workingDir": "test/"
+        }
+    ]
+}

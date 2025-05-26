@@ -1,0 +1,4 @@
+import 'std.io'
+import 'cli.wt'
+
+cli.run()
