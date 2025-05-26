@@ -7,7 +7,6 @@ import 'std.threads'
 
 import 'utils.json'
 import 'utils.stream.api'
-import 'utils.terminal'
 
 import 'colors.wt'
 
