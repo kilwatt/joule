@@ -29,6 +29,7 @@ fun compile_java {
         if _error != null {
             io.println('error occured: ')
             io.println(_error)
+            io.print(colors.reset)
             system.exit(2)
         }
     }

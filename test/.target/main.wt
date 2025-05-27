@@ -1,5 +1,7 @@
+import 'std.io'
 import 'joule.wt'
 
 joule:joule()
 main := joule:instance('joule.Main', [])
+io.println('Watt message')
 main.print()
