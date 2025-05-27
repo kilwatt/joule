@@ -36,9 +36,9 @@ type RunCmd impl Cmd {
         io.println('compiling...')
         // компиляция .java
         compiled := compile_java()
-        // компиляция .joule
-        compile_joule(compiled)
-        // компиляция .wt
+        // создание joule.wt
+        create_joule_file(compiled)
+        // копирование .wt
         copy_watt_files()
         // запуск
         run_main()
@@ -63,7 +63,7 @@ type NewCmd impl Cmd {
             'import \"joule.wt\"\n' +
             '\n' +
             'joule:joule()\n' +
-            'main := __refl__.reflect(\"joule.Main\", [])\n' +
+            'main := joule:instance(\"joule.Main\", [])\n' +
             'main.print()'
         ))
         fs.write_text(project_path.resolve('config.joule'), json.encode({
@@ -77,7 +77,7 @@ type NewCmd impl Cmd {
             'package joule;\n' +
             'public class Main {\n' +
             '   public void print() {\n' +
-            '       System.out.println("Hello, world!");\n' +
+            '       System.out.println("Hello, Joule!");\n' +
             '   }\n' +
             '}'
         ))

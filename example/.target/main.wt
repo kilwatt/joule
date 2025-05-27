@@ -1,5 +1,5 @@
 import 'joule.wt'
 
 joule:joule()
-main := __refl__.reflect('joule.Main', [])
+main := joule:instance('joule.Main', [])
 main.print()

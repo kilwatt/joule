@@ -35,8 +35,8 @@ fun compile_java {
     return compiled
 }
 
-// компиляция joule.wt файла
-fun compile_joule(compiled) {
+// созание joule.wt файла
+fun create_joule_file(compiled) {
     // пути
     cwd_path := system.cwd()
     target_folder := cwd_path.resolve('.target')
@@ -61,6 +61,10 @@ fun compile_joule(compiled) {
         text += '   __refl__.define(fs.path_of(\"' + class_file_name + '\"),\"' + class_name + '\")' + str.unescape('\n')
     }
     text += '}'
+    text += str.unescape(
+        'fun instance(id, args) {\n' +
+        '   return __refl__.reflect(id, args)\n' +
+        '}\n')
     // запись
     fs.write_text(joule_file, text)
 }
